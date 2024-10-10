@@ -10,9 +10,22 @@
  * else              out(t+1) = out(t)
  */
 CHIP PC {
-    IN in[16],inc, load, reset;
+    IN in[16], inc, load, reset;
     OUT out[16];
     
     PARTS:
-    //// Replace this comment with your code.
+    // Increment the current value by 1
+    Inc16 (in=currentValue, out=incrementedValue);
+    
+    // Select between the current value and the incremented value based on 'inc' signal
+    Mux16 (a=currentValue, b=incrementedValue, sel=inc, out=incMuxOut);
+    
+    // Select between the previous result and the input value based on 'load' signal
+    Mux16 (a=incMuxOut, b=in, sel=load, out=loadMuxOut);
+    
+    // Select between the previous result and 0 based on 'reset' signal
+    Mux16 (a=loadMuxOut, b=false, sel=reset, out=resetMuxOut);
+    
+    // Store the final result in the register and output it
+    Register (in=resetMuxOut, load=true, out=out, out=currentValue);
 }
