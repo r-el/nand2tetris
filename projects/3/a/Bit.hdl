@@ -13,5 +13,12 @@ CHIP Bit {
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
+    // Select between the current value and the new input value
+    Mux(a=dffOut, b=in, sel=load, out=dffIn); 
+
+    // Store the selected value
+    DFF(in=dffIn, out=dffOut);
+
+    // Output the selected value
+    Or(a=dffOut, b=dffOut, out=out);
 }
